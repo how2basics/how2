@@ -1,0 +1,21 @@
+function receitas_local(receita_id){
+
+	var favoritos_lista= localStorage.getItem("favoritos");
+	if(favoritos_lista==null)
+	{
+		localStorage.setItem("favoritos" , JSON.stringify([]));
+		return false;
+	}
+	
+	var favoritos=JSON.parse(favoritos_lista);
+	favoritos.forEach(function(favorito){
+		if(favorito==receita_id)
+		{
+
+			return true;
+		}
+
+	});
+
+	return false;
+}

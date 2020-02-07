@@ -1,0 +1,70 @@
+var clone_media = null;
+
+
+function procura_caixatexto(){
+
+	var keywords =$('#pesquisa').val();
+	procura(keywords);
+}
+
+
+
+function procura(keywords) {
+	clone_media = $('.media').clone();
+
+	
+		var search_keywords =keywords;
+		$('.panel-title').text('Search results for "' + search_keywords + '"');
+
+		$('.media-list').html('');
+
+		var search_url = API_URL + "&q=" + search_keywords;
+		$.ajax({
+			method: "GET",
+			url: search_url
+			
+		}).done(function (msg) {
+
+			msg.hits.forEach(function (result) {
+				var div_media = clone_media.clone();
+
+				var posterURL = result.recipe.image;
+				if (posterURL == "N/A" || posterURL == "") {
+					posterURL = DEFAULT_POSTER;
+				}
+				var poster = $('.image', div_media);
+				
+				var poster_imagem = $('.thumbnail', div_media);
+
+				// In case image could not be loaded properly, replace it with "na_poster.jpg"
+				poster.on("error", function (event) {
+					event.target.src = DEFAULT_POSTER;
+				});
+				
+				poster.attr("src", posterURL);
+				
+				poster_imagem.attr("href", result.recipe.url);
+				
+				var existe=receitas_local(result.recipe.uri);
+				
+				$(".icon_favoritos", div_media).attr("data-receita",result.recipe.uri);
+				
+				if(existe)
+				{
+					var icon = $(".icon_favoritos i",div_media);
+					icon.attr("class", "fas fa-star");
+				}else
+				{
+					var icon = $(".icon_favoritos i",div_media);
+					icon.attr("class", "far fa-star");
+				}
+
+				$('.label', div_media).text(result.recipe.label);
+				$('.calories', div_media).text("Calorias: " + result.recipe.calories);
+				$('.ingredients', div_media).text("ingredientes: " + result.recipe.ingredients.length);
+				
+				$('.media-list').append(div_media);
+
+				});
+		});
+}

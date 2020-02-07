@@ -1,0 +1,12 @@
+function remover_favoritos(id_receita){
+	var existe =receitas_local(id_receita);
+	if (!existe)
+	{
+		var favoritos_lista= localStorage.getItem("favoritos");
+		var favoritos=JSON.parse(favoritos_lista);
+
+		favoritos.push(id_receita);
+	
+		localStorage.removeItem("favoritos", JSON.stringify(favoritos));
+	}
+}
